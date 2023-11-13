@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { getAll, search } from "../utils/BookAPI";
 import ChangeOptions from "./ChangeOptions";
 
-const SearchBooks = ({ onClose }) => {
+const SearchBooks = ({ onClose, allBook, onUpdateShelf }) => {
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState(allBook);
 
   useEffect(() => {
     const handleSearch = () => {
@@ -12,7 +12,7 @@ const SearchBooks = ({ onClose }) => {
         search(query, 10)
           .then((data) => {
             if (Array.isArray(data) || typeof data === "object") {
-              setResults(data);
+              return setResults(data);
             }
           })
           .catch((error) => {
@@ -22,7 +22,7 @@ const SearchBooks = ({ onClose }) => {
         getAll()
           .then((data) => {
             if (Array.isArray(data)) {
-              setResults(data);
+              return setResults(data);
             }
           })
           .catch((error) => {
@@ -61,9 +61,10 @@ const SearchBooks = ({ onClose }) => {
                         style={{
                           width: 128,
                           height: 193,
+                          backgroundImage: `url('${book.imageLinks.thumbnail}')`,
                         }}
                       ></div>
-                      <ChangeOptions />
+                      <ChangeOptions book={book} onUpdate={onUpdateShelf} />
                     </div>
                   </div>
                   <div className="book-title">{book.title}</div>
